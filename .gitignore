@@ -1,0 +1,8 @@
+# NetBeans specific
+/BoardGame/nbproject/private/
+/BoardGame/build/
+/BoardGame/nbbuild/
+/BoardGame/dist/
+/BoardGame/nbdist/
+/BoardGame/nbactions.xml
+/BoardGame/nb-configuration.xml
