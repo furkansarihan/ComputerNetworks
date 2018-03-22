@@ -21,6 +21,9 @@ public class BoardGame extends javax.swing.JFrame {
      */
     public Player player1;
     public Player player2;
+    public Player Playing;
+    
+    boolean selected = false;
     
     public BoardGame() {
         initComponents();
@@ -29,6 +32,7 @@ public class BoardGame extends javax.swing.JFrame {
         this.player2 = new Player(false);
         this.setBoard(this.player1);
         this.setBoard(this.player2);
+        Playing = player2;
     }
     public void setBoard(Player pl) {
         try {
@@ -101,175 +105,325 @@ public class BoardGame extends javax.swing.JFrame {
         L0_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L0_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L0_0.setMinimumSize(new java.awt.Dimension(32, 32));
+        L0_0.setName("L0_0"); // NOI18N
         L0_0.setPreferredSize(new java.awt.Dimension(32, 32));
+        L0_0.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L0_0MousePressed(evt);
+            }
+        });
         getContentPane().add(L0_0);
         L0_0.setBounds(390, 290, 32, 32);
 
         L1_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_0.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_0.setName("L1_0"); // NOI18N
         L1_0.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_0.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_0MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_0);
         L1_0.setBounds(390, 200, 32, 32);
 
         L1_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_1.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_1.setName("L1_1"); // NOI18N
         L1_1.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_1MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_1);
         L1_1.setBounds(450, 230, 32, 32);
 
         L1_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_2.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_2.setName("L1_2"); // NOI18N
         L1_2.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_2MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_2);
         L1_2.setBounds(460, 290, 32, 32);
 
         L1_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_3.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_3.setName("L1_3"); // NOI18N
         L1_3.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_3MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_3);
         L1_3.setBounds(450, 340, 32, 32);
 
         L1_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_4.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_4.setName("L1_4"); // NOI18N
         L1_4.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_4MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_4);
         L1_4.setBounds(390, 370, 32, 32);
 
         L1_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_5.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_5.setName("L1_5"); // NOI18N
         L1_5.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_5MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_5);
-        L1_5.setBounds(320, 340, 32, 32);
+        L1_5.setBounds(320, 330, 32, 32);
 
         L1_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_6.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_6.setName("L1_6"); // NOI18N
         L1_6.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_6MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_6);
         L1_6.setBounds(300, 290, 32, 32);
 
         L1_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L1_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_7.setMinimumSize(new java.awt.Dimension(32, 32));
+        L1_7.setName("L1_7"); // NOI18N
         L1_7.setPreferredSize(new java.awt.Dimension(32, 32));
+        L1_7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L1_7MousePressed(evt);
+            }
+        });
         getContentPane().add(L1_7);
         L1_7.setBounds(320, 230, 32, 32);
 
         L2_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_0.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_0.setName("L2_0"); // NOI18N
         L2_0.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_0.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_0MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_0);
         L2_0.setBounds(390, 140, 32, 32);
 
         L2_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_1.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_1.setName("L2_1"); // NOI18N
         L2_1.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_1MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_1);
         L2_1.setBounds(500, 200, 32, 32);
 
         L2_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_2.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_2.setName("L2_2"); // NOI18N
         L2_2.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_2MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_2);
         L2_2.setBounds(530, 290, 32, 32);
 
         L2_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_3.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_3.setName("L2_3"); // NOI18N
         L2_3.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_3MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_3);
         L2_3.setBounds(510, 370, 32, 32);
 
         L2_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_4.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_4.setName("L2_4"); // NOI18N
         L2_4.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_4MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_4);
         L2_4.setBounds(390, 430, 32, 32);
 
         L2_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_5.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_5.setName("L2_5"); // NOI18N
         L2_5.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_5MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_5);
-        L2_5.setBounds(260, 370, 32, 32);
+        L2_5.setBounds(270, 370, 32, 32);
 
         L2_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_6.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_6.setName("L2_6"); // NOI18N
         L2_6.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_6MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_6);
         L2_6.setBounds(240, 290, 32, 32);
 
         L2_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L2_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_7.setMinimumSize(new java.awt.Dimension(32, 32));
+        L2_7.setName("L2_7"); // NOI18N
         L2_7.setPreferredSize(new java.awt.Dimension(32, 32));
+        L2_7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L2_7MousePressed(evt);
+            }
+        });
         getContentPane().add(L2_7);
         L2_7.setBounds(260, 200, 32, 32);
 
         L3_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_0.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_0.setName("L3_0"); // NOI18N
         L3_0.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_0.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_0MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_0);
         L3_0.setBounds(390, 80, 32, 32);
 
         L3_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_1.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_1.setName("L3_1"); // NOI18N
         L3_1.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_1MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_1);
-        L3_1.setBounds(550, 160, 32, 32);
+        L3_1.setBounds(540, 160, 32, 32);
 
         L3_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_2.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_2.setName("L3_2"); // NOI18N
         L3_2.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_2MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_2);
         L3_2.setBounds(600, 290, 32, 32);
 
         L3_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_3.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_3.setName("L3_3"); // NOI18N
         L3_3.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_3MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_3);
-        L3_3.setBounds(560, 410, 32, 32);
+        L3_3.setBounds(550, 410, 32, 32);
 
         L3_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_4.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_4.setName("L3_4"); // NOI18N
         L3_4.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_4MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_4);
         L3_4.setBounds(390, 500, 32, 32);
 
         L3_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_5.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_5.setName("L3_5"); // NOI18N
         L3_5.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_5MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_5);
-        L3_5.setBounds(210, 420, 32, 32);
+        L3_5.setBounds(220, 410, 32, 32);
 
         L3_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_6.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_6.setName("L3_6"); // NOI18N
         L3_6.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_6MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_6);
         L3_6.setBounds(180, 290, 32, 32);
 
         L3_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
         L3_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_7.setMinimumSize(new java.awt.Dimension(32, 32));
+        L3_7.setName("L3_7"); // NOI18N
         L3_7.setPreferredSize(new java.awt.Dimension(32, 32));
+        L3_7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                L3_7MousePressed(evt);
+            }
+        });
         getContentPane().add(L3_7);
         L3_7.setBounds(210, 160, 32, 32);
 
@@ -280,6 +434,124 @@ public class BoardGame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void L0_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L0_0MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L0_0MousePressed
+
+    private void L1_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_0MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_0MousePressed
+
+    private void L1_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_1MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_1MousePressed
+
+    private void L1_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_2MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_2MousePressed
+
+    private void L1_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_3MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_3MousePressed
+
+    private void L1_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_4MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_4MousePressed
+
+    private void L1_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_5MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_5MousePressed
+
+    private void L1_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_6MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_6MousePressed
+
+    private void L1_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_7MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L1_7MousePressed
+
+    private void L2_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_0MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_0MousePressed
+
+    private void L2_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_1MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_1MousePressed
+
+    private void L2_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_2MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_2MousePressed
+
+    private void L2_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_3MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_3MousePressed
+
+    private void L2_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_4MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_4MousePressed
+
+    private void L2_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_5MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_5MousePressed
+
+    private void L2_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_6MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_6MousePressed
+
+    private void L2_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_7MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L2_7MousePressed
+
+    private void L3_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_0MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_0MousePressed
+
+    private void L3_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_1MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_1MousePressed
+
+    private void L3_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_2MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_2MousePressed
+
+    private void L3_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_3MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_3MousePressed
+
+    private void L3_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_4MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_4MousePressed
+
+    private void L3_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_5MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_5MousePressed
+
+    private void L3_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_6MousePressed
+        Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_6MousePressed
+
+    private void L3_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_7MousePressed
+       Handler((JButton)evt.getSource());
+    }//GEN-LAST:event_L3_7MousePressed
+    
+    void Handler(JButton b){
+        if(!selected){
+            if(Playing.playFrom(b)){
+                // Şimdi oynamak istediğin yeri seç
+                selected = true;
+            }else{
+                // Kendi taşlarından seçmen gerekiyor
+            }
+        }else{
+            ArrayList<Piece> p = new ArrayList<>();
+            p = Playing.playTo(b);
+            for (Piece pi : p) {
+                System.out.println("L" + pi.layer + "_" + pi.order);
+            }
+            System.out.println("*********************************");
+            selected = false;
+        }
+    }
     /**
      * @param args the command line arguments
      */
