@@ -30,9 +30,11 @@ public class BoardGame extends javax.swing.JFrame {
         this.setResizable(false);
         this.player1 = new Player(true);
         this.player2 = new Player(false);
+        player1.setRival(player2);
+        player2.setRival(player1);
         this.setBoard(this.player1);
         this.setBoard(this.player2);
-        Playing = player2;
+        Playing = player1;
     }
     public void setBoard(Player pl) {
         try {
@@ -539,18 +541,36 @@ public class BoardGame extends javax.swing.JFrame {
             if(Playing.playFrom(b)){
                 // Şimdi oynamak istediğin yeri seç
                 selected = true;
+                print(b);
             }else{
                 // Kendi taşlarından seçmen gerekiyor
             }
         }else{
-            ArrayList<Piece> p = new ArrayList<>();
+            if(isPlayable(b)){
+                if(true){
+                    
+                }else{
+                    // Yer boş ama doğru yeri seçtiğine emin ol.....
+                }
+            }else{
+                // Buraya hamle yapamazsın, başka bir taş var..... :(
+            }
+        }
+    }
+    boolean isPlayable(JButton b){
+        if(player1.isHere(b) || player2.isHere(b))
+            return false;
+        
+        return true;
+    }
+    void print(JButton b){
+        ArrayList<Piece> p = new ArrayList<>();
             p = Playing.playTo(b);
             for (Piece pi : p) {
                 System.out.println("L" + pi.layer + "_" + pi.order);
             }
             System.out.println("*********************************");
             selected = false;
-        }
     }
     /**
      * @param args the command line arguments
