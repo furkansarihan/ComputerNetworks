@@ -37,7 +37,7 @@ public class BoardGame extends javax.swing.JFrame {
         player1.setRival(player2);
         player2.setRival(player1);
         this.findButtons();
-        this.setButtons(player1,player2);
+        this.setButtons();
         Playing = player1;
     }
     public void findButtons(){ // Only executed once at starting
@@ -55,14 +55,14 @@ public class BoardGame extends javax.swing.JFrame {
             
         }
     }
-    public void setButtons(Player p1,Player p2){ // Executes when play area has changes
+    public void setButtons(){ // Executes when play area has changes
         for (JButton bu : buttons) {
-            if(p1.isHere(bu.getName())){
-                if(p1.isOne){
+            if(player1.isHere(bu.getName())){
+                if(player1.isOne){
                     bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
                 }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
-            }else if(p2.isHere(bu.getName())){
-                if(p2.isOne){
+            }else if(player2.isHere(bu.getName())){
+                if(player2.isOne){
                     bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
                 }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
             }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/white.png")));
@@ -562,47 +562,50 @@ public class BoardGame extends javax.swing.JFrame {
     void Handler(JButton b){
         if(!selected){ // First section
             if(Playing.playFrom(b)){
-                if(Playing.canSet(b.getName())){
-                    System.out.println("Now you can select somewhere to move !");
-                    selected = true;
-                    //printTest(b);
-                }else{
-                    System.out.println("Cant move anywhere please select another piece :(");
-                }
+                System.out.println("Now you can select somewhere to move !");
+                selected = true;
             }else{
                 System.out.println("You have to select a piece that is yours !");
             }
         }else{ // Second section
-            if(isPlayable(b)){
-                if(Playing.isInPossibleSet(b.getName())){
+            if(!isSamePiece(b)){
+                if(this.isEmpty(b.getName())&&Playing.isInPossibleSet(b.getName())){ // Valid play movements
                     if(Playing.isInScoreSet(b.getName())){
                         Playing.scoreMoveTo(b.getName());
-                        Playing = Playing.getRival();
-                        this.setButtons(this.player1,this.player2);
-                        
-                        selected = false;
+                        if(!Playing.isScoreSetEmpty(b.getName())) {this.setButtons();Handler(b);System.out.println("Yeni hareket geliyor");}
+                        else {
+                            Playing = Playing.getRival();
+                            this.setButtons();
+                            selected = false;
+                        }
                     }else{
                         Playing.defaultMoveTo(b.getName());
                         Playing = Playing.getRival();
-                        this.setButtons(this.player1,this.player2);
+                        this.setButtons();
                         selected = false;
                     }
                 }else{
                     System.out.println("This piece is not in possible movement set");
                 }
             }else{
-                System.out.println("You can't move to there !");
+                // Selected her or his own piece :)
+                // Redirected to handle again :))
+                selected = false;
+                Handler(b);
             }
         }
     }
-    boolean ableToPlay(String b){
-        return true;
-    }
-    boolean isPlayable(JButton b){
-        if(player1.isHere(b.getName()) || player2.isHere(b.getName()))
+    boolean isEmpty(String b){
+        if(Playing.isHere(b)|| Playing.rival.isHere(b))
             return false;
         
         return true;
+    }
+    boolean isSamePiece(JButton b){
+        if(Playing.isHere(b.getName()))
+            return true;
+        
+        return false;
     }
     void printTest(JButton b){
         ArrayList<Piece> p = new ArrayList<>();
