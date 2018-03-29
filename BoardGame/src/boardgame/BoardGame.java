@@ -19,47 +19,53 @@ public class BoardGame extends javax.swing.JFrame {
     /**
      * Creates new form BoardGame_
      */
+    public ArrayList<JButton> buttons = new ArrayList<>();
+    public ArrayList<Piece> allPieces = new ArrayList<>();
+    
     public Player player1;
     public Player player2;
     public Player Playing;
     
-    boolean selected = false;
+    boolean selected = false; // HAndle multiplayer
     
     public BoardGame() {
         initComponents();
+        System.out.println(L0_0.getName());
         this.setResizable(false);
         this.player1 = new Player(true);
         this.player2 = new Player(false);
         player1.setRival(player2);
         player2.setRival(player1);
-        this.setBoard(this.player1);
-        this.setBoard(this.player2);
+        this.findButtons();
+        this.setButtons(player1,player2);
         Playing = player1;
     }
-    public void setBoard(Player pl) {
+    public void findButtons(){ // Only executed once at starting
         try {
-            ArrayList<ButtonField> but = new ArrayList<ButtonField>();
+            ArrayList<JButton> but = new ArrayList<>();
             Class c = Class.forName(this.getClass().getName());
             Field[] f = c.getDeclaredFields();
             for (Field f1 : f) {
                 if (!f1.getType().equals(JButton.class)) continue;
                 JButton b = (JButton)f1.get(this);
-                ButtonField bf = new ButtonField(b, f1);
-                but.add(bf);
+                but.add(b);
             }
-            for (Piece p : pl.pieces) {
-                String s = "L" + p.layer + "_" + p.order;
-                for (ButtonField bu : but) {
-                    if (!bu.field.getName().equals(s)) continue;
-                    if (pl.isOne) {
-                        bu.button.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
-                        continue;
-                    }
-                    bu.button.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
-                }
-            }
+            buttons = but;
         }catch(Exception e){
             
+        }
+    }
+    public void setButtons(Player p1,Player p2){ // Executes when play area has changes
+        for (JButton bu : buttons) {
+            if(p1.isHere(bu.getName())){
+                if(p1.isOne){
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
+                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
+            }else if(p2.isHere(bu.getName())){
+                if(p2.isOne){
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
+                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
+            }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/white.png")));
         }
     }
     /**
@@ -435,7 +441,7 @@ public class BoardGame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void L0_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L0_0MousePressed
         Handler((JButton)evt.getSource());
     }//GEN-LAST:event_L0_0MousePressed
@@ -535,39 +541,74 @@ public class BoardGame extends javax.swing.JFrame {
     private void L3_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_7MousePressed
        Handler((JButton)evt.getSource());
     }//GEN-LAST:event_L3_7MousePressed
-    
+    /*
+     *Handler function has got two section
+     *1-
+     *Program counter enters first section
+     *when piece is selected. And this action
+     *will not and until player select a valid
+     *piece to play.
+     *2-
+     *If player selects valid piece;
+     *selected boolean changes value to true
+     *and next handler func. comes from a JButton
+     *PC enters second section. In this section,
+     *control functions makes decision to move
+     *to piece and make the action. After end 
+     *of this section. Playing side will changes 
+     *and board refreshes.
+     *
+     */
     void Handler(JButton b){
-        if(!selected){
+        if(!selected){ // First section
             if(Playing.playFrom(b)){
-                // Şimdi oynamak istediğin yeri seç
-                selected = true;
-                print(b);
-            }else{
-                // Kendi taşlarından seçmen gerekiyor
-            }
-        }else{
-            if(isPlayable(b)){
-                if(true){
-                    
+                if(Playing.canSet(b.getName())){
+                    System.out.println("Now you can select somewhere to move !");
+                    selected = true;
+                    //printTest(b);
                 }else{
-                    // Yer boş ama doğru yeri seçtiğine emin ol.....
+                    System.out.println("Cant move anywhere please select another piece :(");
                 }
             }else{
-                // Buraya hamle yapamazsın, başka bir taş var..... :(
+                System.out.println("You have to select a piece that is yours !");
+            }
+        }else{ // Second section
+            if(isPlayable(b)){
+                if(Playing.isInPossibleSet(b.getName())){
+                    if(Playing.isInScoreSet(b.getName())){
+                        Playing.scoreMoveTo(b.getName());
+                        Playing = Playing.getRival();
+                        this.setButtons(this.player1,this.player2);
+                        
+                        selected = false;
+                    }else{
+                        Playing.defaultMoveTo(b.getName());
+                        Playing = Playing.getRival();
+                        this.setButtons(this.player1,this.player2);
+                        selected = false;
+                    }
+                }else{
+                    System.out.println("This piece is not in possible movement set");
+                }
+            }else{
+                System.out.println("You can't move to there !");
             }
         }
     }
+    boolean ableToPlay(String b){
+        return true;
+    }
     boolean isPlayable(JButton b){
-        if(player1.isHere(b) || player2.isHere(b))
+        if(player1.isHere(b.getName()) || player2.isHere(b.getName()))
             return false;
         
         return true;
     }
-    void print(JButton b){
+    void printTest(JButton b){
         ArrayList<Piece> p = new ArrayList<>();
-            p = Playing.playTo(b);
+            p = Playing.getPossibleSet(b);
             for (Piece pi : p) {
-                System.out.println("L" + pi.layer + "_" + pi.order);
+                pi.getName();
             }
             System.out.println("*********************************");
             selected = false;
