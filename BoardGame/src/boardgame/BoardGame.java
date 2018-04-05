@@ -5,8 +5,14 @@
  */
 package boardgame;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.*;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -25,20 +31,28 @@ public class BoardGame extends javax.swing.JFrame {
     public Player player1;
     public Player player2;
     public Player Playing;
+    public Player thisPlayer;
     
     boolean selected = false; // HAndle multiplayer
     
+    Socket socket = null;
+    
+    public static ObjectInputStream iStream;
+    public static ObjectOutputStream oStream;
+    
     public BoardGame() {
         initComponents();
-        System.out.println(L0_0.getName());
         this.setResizable(false);
+        
         this.player1 = new Player(true);
         this.player2 = new Player(false);
         player1.setRival(player2);
         player2.setRival(player1);
         this.findButtons();
         this.setButtons();
+        /*
         Playing = player1;
+        */
     }
     public void findButtons(){ // Only executed once at starting
         try {
@@ -59,13 +73,13 @@ public class BoardGame extends javax.swing.JFrame {
         for (JButton bu : buttons) {
             if(player1.isHere(bu.getName())){
                 if(player1.isOne){
-                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
-                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue.png")));
+                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
             }else if(player2.isHere(bu.getName())){
                 if(player2.isOne){
-                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/black.png")));
-                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/yellow.png")));
-            }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/white.png")));
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue.png")));
+                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
+            }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/empty.png")));
         }
     }
     /**
@@ -102,15 +116,18 @@ public class BoardGame extends javax.swing.JFrame {
         L3_5 = new javax.swing.JButton();
         L3_6 = new javax.swing.JButton();
         L3_7 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        console = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(null);
 
-        L0_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L0_0.setBorderPainted(false);
+        L0_0.setContentAreaFilled(false);
+        L0_0.setFocusPainted(false);
         L0_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L0_0.setMinimumSize(new java.awt.Dimension(32, 32));
         L0_0.setName("L0_0"); // NOI18N
@@ -123,7 +140,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L0_0);
         L0_0.setBounds(390, 290, 32, 32);
 
-        L1_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_0.setContentAreaFilled(false);
         L1_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_0.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_0.setName("L1_0"); // NOI18N
@@ -136,7 +153,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_0);
         L1_0.setBounds(390, 200, 32, 32);
 
-        L1_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_1.setContentAreaFilled(false);
         L1_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_1.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_1.setName("L1_1"); // NOI18N
@@ -149,7 +166,9 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_1);
         L1_1.setBounds(450, 230, 32, 32);
 
-        L1_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_2.setBorderPainted(false);
+        L1_2.setContentAreaFilled(false);
+        L1_2.setFocusPainted(false);
         L1_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_2.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_2.setName("L1_2"); // NOI18N
@@ -162,7 +181,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_2);
         L1_2.setBounds(460, 290, 32, 32);
 
-        L1_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_3.setContentAreaFilled(false);
         L1_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_3.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_3.setName("L1_3"); // NOI18N
@@ -175,7 +194,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_3);
         L1_3.setBounds(450, 340, 32, 32);
 
-        L1_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_4.setContentAreaFilled(false);
         L1_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_4.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_4.setName("L1_4"); // NOI18N
@@ -188,7 +207,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_4);
         L1_4.setBounds(390, 370, 32, 32);
 
-        L1_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_5.setContentAreaFilled(false);
         L1_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_5.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_5.setName("L1_5"); // NOI18N
@@ -201,7 +220,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_5);
         L1_5.setBounds(320, 330, 32, 32);
 
-        L1_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_6.setContentAreaFilled(false);
         L1_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_6.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_6.setName("L1_6"); // NOI18N
@@ -214,7 +233,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_6);
         L1_6.setBounds(300, 290, 32, 32);
 
-        L1_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L1_7.setContentAreaFilled(false);
         L1_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L1_7.setMinimumSize(new java.awt.Dimension(32, 32));
         L1_7.setName("L1_7"); // NOI18N
@@ -227,7 +246,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L1_7);
         L1_7.setBounds(320, 230, 32, 32);
 
-        L2_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_0.setContentAreaFilled(false);
         L2_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_0.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_0.setName("L2_0"); // NOI18N
@@ -240,7 +259,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_0);
         L2_0.setBounds(390, 140, 32, 32);
 
-        L2_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_1.setContentAreaFilled(false);
         L2_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_1.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_1.setName("L2_1"); // NOI18N
@@ -253,7 +272,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_1);
         L2_1.setBounds(500, 200, 32, 32);
 
-        L2_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_2.setContentAreaFilled(false);
         L2_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_2.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_2.setName("L2_2"); // NOI18N
@@ -266,7 +285,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_2);
         L2_2.setBounds(530, 290, 32, 32);
 
-        L2_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_3.setContentAreaFilled(false);
         L2_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_3.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_3.setName("L2_3"); // NOI18N
@@ -279,7 +298,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_3);
         L2_3.setBounds(510, 370, 32, 32);
 
-        L2_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_4.setContentAreaFilled(false);
         L2_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_4.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_4.setName("L2_4"); // NOI18N
@@ -292,7 +311,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_4);
         L2_4.setBounds(390, 430, 32, 32);
 
-        L2_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_5.setContentAreaFilled(false);
         L2_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_5.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_5.setName("L2_5"); // NOI18N
@@ -305,7 +324,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_5);
         L2_5.setBounds(270, 370, 32, 32);
 
-        L2_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_6.setContentAreaFilled(false);
         L2_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_6.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_6.setName("L2_6"); // NOI18N
@@ -318,7 +337,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_6);
         L2_6.setBounds(240, 290, 32, 32);
 
-        L2_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L2_7.setContentAreaFilled(false);
         L2_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L2_7.setMinimumSize(new java.awt.Dimension(32, 32));
         L2_7.setName("L2_7"); // NOI18N
@@ -331,7 +350,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L2_7);
         L2_7.setBounds(260, 200, 32, 32);
 
-        L3_0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_0.setContentAreaFilled(false);
         L3_0.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_0.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_0.setName("L3_0"); // NOI18N
@@ -344,7 +363,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_0);
         L3_0.setBounds(390, 80, 32, 32);
 
-        L3_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_1.setContentAreaFilled(false);
         L3_1.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_1.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_1.setName("L3_1"); // NOI18N
@@ -355,9 +374,9 @@ public class BoardGame extends javax.swing.JFrame {
             }
         });
         getContentPane().add(L3_1);
-        L3_1.setBounds(540, 160, 32, 32);
+        L3_1.setBounds(560, 160, 32, 32);
 
-        L3_2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_2.setContentAreaFilled(false);
         L3_2.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_2.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_2.setName("L3_2"); // NOI18N
@@ -370,7 +389,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_2);
         L3_2.setBounds(600, 290, 32, 32);
 
-        L3_3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_3.setContentAreaFilled(false);
         L3_3.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_3.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_3.setName("L3_3"); // NOI18N
@@ -383,7 +402,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_3);
         L3_3.setBounds(550, 410, 32, 32);
 
-        L3_4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_4.setContentAreaFilled(false);
         L3_4.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_4.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_4.setName("L3_4"); // NOI18N
@@ -396,7 +415,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_4);
         L3_4.setBounds(390, 500, 32, 32);
 
-        L3_5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_5.setContentAreaFilled(false);
         L3_5.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_5.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_5.setName("L3_5"); // NOI18N
@@ -409,7 +428,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_5);
         L3_5.setBounds(220, 410, 32, 32);
 
-        L3_6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_6.setContentAreaFilled(false);
         L3_6.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_6.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_6.setName("L3_6"); // NOI18N
@@ -422,7 +441,7 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_6);
         L3_6.setBounds(180, 290, 32, 32);
 
-        L3_7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/white.png"))); // NOI18N
+        L3_7.setContentAreaFilled(false);
         L3_7.setMaximumSize(new java.awt.Dimension(32, 32));
         L3_7.setMinimumSize(new java.awt.Dimension(32, 32));
         L3_7.setName("L3_7"); // NOI18N
@@ -434,6 +453,24 @@ public class BoardGame extends javax.swing.JFrame {
         });
         getContentPane().add(L3_7);
         L3_7.setBounds(210, 160, 32, 32);
+
+        jButton1.setText("Start Game");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
+        jButton1.setBounds(10, 10, 190, 32);
+
+        console.setEditable(false);
+        console.setColumns(20);
+        console.setRows(5);
+        jScrollPane1.setViewportView(console);
+        console.getAccessibleContext().setAccessibleParent(null);
+
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(210, 10, 530, 70);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/background.png"))); // NOI18N
         getContentPane().add(jLabel1);
@@ -541,6 +578,28 @@ public class BoardGame extends javax.swing.JFrame {
     private void L3_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_7MousePressed
        Handler((JButton)evt.getSource());
     }//GEN-LAST:event_L3_7MousePressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            int i;
+            socket = new Socket("0.0.0.0",7187);
+            addConsole("Connecting success");
+            iStream = new ObjectInputStream(socket.getInputStream());
+            oStream = new ObjectOutputStream(socket.getOutputStream());
+            i = (Integer)iStream.readObject();
+            if(i == 1){
+                thisPlayer = player1;
+                addConsole("YOUR TURN");
+            }else if(i == 2){
+                thisPlayer = player2;
+                addConsole("YOUR RIVALS TURN");
+            }
+            Playing = player1;
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
     /*
      *Handler function has got two section
      *1-
@@ -561,18 +620,20 @@ public class BoardGame extends javax.swing.JFrame {
      */
     void Handler(JButton b){
         if(!selected){ // First section
-            if(Playing.playFrom(b)){
-                System.out.println("Now you can select somewhere to move !");
+            if(thisPlayer != null && thisPlayer.equals(Playing) && Playing.playFrom(b)){
+                addConsole("Now you can select somewhere to move !");
                 selected = true;
+                if(Playing == player1)b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue_move.png")));
+                else b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red_move.png")));
             }else{
-                System.out.println("You have to select a piece that is yours !");
+                addConsole("You have to select a piece that is yours !");
             }
         }else{ // Second section
             if(!isSamePiece(b)){
                 if(this.isEmpty(b.getName())&&Playing.isInPossibleSet(b.getName())){ // Valid play movements
                     if(Playing.isInScoreSet(b.getName())){
                         Playing.scoreMoveTo(b.getName());
-                        if(!Playing.isScoreSetEmpty(b.getName())) {this.setButtons();Handler(b);System.out.println("Yeni hareket geliyor");}
+                        if(!Playing.isScoreSetEmpty(b.getName())) {this.setButtons();Handler(b);addConsole("Yeni hareket geliyor");}
                         else {
                             Playing = Playing.getRival();
                             this.setButtons();
@@ -585,7 +646,7 @@ public class BoardGame extends javax.swing.JFrame {
                         selected = false;
                     }
                 }else{
-                    System.out.println("This piece is not in possible movement set");
+                    addConsole("This piece is not in possible movement set");
                 }
             }else{
                 // Selected her or his own piece :)
@@ -607,14 +668,9 @@ public class BoardGame extends javax.swing.JFrame {
         
         return false;
     }
-    void printTest(JButton b){
-        ArrayList<Piece> p = new ArrayList<>();
-            p = Playing.getPossibleSet(b);
-            for (Piece pi : p) {
-                pi.getName();
-            }
-            System.out.println("*********************************");
-            selected = false;
+    void addConsole(String s){
+        char carrige = 10;
+        console.setText(console.getText() + s + carrige);
     }
     /**
      * @param args the command line arguments
@@ -678,6 +734,9 @@ public class BoardGame extends javax.swing.JFrame {
     private javax.swing.JButton L3_5;
     private javax.swing.JButton L3_6;
     private javax.swing.JButton L3_7;
+    private javax.swing.JTextArea console;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
