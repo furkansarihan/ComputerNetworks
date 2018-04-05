@@ -46,37 +46,12 @@ public class ServerWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        playertext1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        playertext2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        console = new javax.swing.JTextArea();
         startserver = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        console = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("Player 1");
-
-        playertext1.setText("\"\"");
-
-        jLabel3.setText("Player 2");
-
-        playertext2.setText("\"\"");
-
-        jLabel5.setText("-");
-
-        jLabel6.setText("jLabel6");
-
-        jLabel7.setText(":");
-
-        console.setEditable(false);
-        console.setColumns(20);
-        console.setRows(5);
-        jScrollPane1.setViewportView(console);
 
         startserver.setText("Start Server");
         startserver.addActionListener(new java.awt.event.ActionListener() {
@@ -85,56 +60,36 @@ public class ServerWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("CONSOLE");
+
+        console.setColumns(20);
+        console.setRows(5);
+        jScrollPane2.setViewportView(console);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(35, 35, 35))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(playertext1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
-                        .addComponent(jLabel5)
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel7)
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel6)
-                        .addGap(45, 45, 45)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(playertext2))
-                        .addGap(70, 70, 70))))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(startserver)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(startserver)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(startserver)
-                .addGap(55, 55, 55)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(playertext1)
-                    .addComponent(playertext2)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(startserver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -143,13 +98,17 @@ public class ServerWindow extends javax.swing.JFrame {
     private void startserverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startserverActionPerformed
         try {
             socket = new ServerSocket(7187);
-            top();
-            sendInfo();
-            console.setText(console.getText() + "Server created. IP address : " + socket.getInetAddress() + ". Waiting..." + carrige);
-        } catch (IOException ex) {
-            Logger.getLogger(ServerWindow.class.getName()).log(Level.SEVERE, null, ex);
+            getClients(); // Getting clients 
+            gettingStreams(); // Getting streams..
+            sendInfo(); // Sending player info to clients
+            ThreadGame th1 = new ThreadGame(iStream0,oStream1);
+            ThreadGame th2 = new ThreadGame(iStream1,oStream0);
+            th1.start();th2.start(); // Threads start to listen each other ..
+            addConsole("Server created. IP address : " + socket.getInetAddress());
+            addConsole("Match started");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
     }//GEN-LAST:event_startserverActionPerformed
 
     /**
@@ -184,43 +143,85 @@ public class ServerWindow extends javax.swing.JFrame {
         /* Create and display the form */
 
     }
-
-    void sendInfo() throws IOException {
-
+    void gettingStreams() throws IOException{
         oStream0 = new ObjectOutputStream(list.get(0).getOutputStream());
         oStream1 = new ObjectOutputStream(list.get(1).getOutputStream());
-
+        oStream0.flush();oStream1.flush();
+        iStream0 = new ObjectInputStream(list.get(0).getInputStream());
+        iStream1 = new ObjectInputStream(list.get(1).getInputStream());
+        System.out.println(iStream0.toString()+"");System.out.println(iStream1.toString()+"");
+    }
+    void sendInfo() throws IOException {
+        
+        System.out.println(oStream0.toString());System.out.println(oStream1.toString());
         oStream0.writeObject(1);
         oStream1.writeObject(2);
     }
 
-    public void top() {
+    public void getClients() {
         boolean kontrol = true;
         while (kontrol) {
             try {
                 Socket s = new Socket();
                 s = socket.accept();
                 list.add(s);
-                console.setText(console.getText() + "Client finded. IP address  --> " + s.getLocalAddress() + carrige);
+                addConsole("Client finded. IP address  --> ");
                 if (list.size() == 2) {
                     kontrol = false;
                 }
-                
+                //jLabel3.setText(list.size()+"");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea console;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel playertext1;
-    private javax.swing.JLabel playertext2;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton startserver;
     // End of variables declaration//GEN-END:variables
+
+    public class ThreadGame implements Runnable { // First thread that 
+        private Thread t;
+        ObjectInputStream ois;
+        ObjectOutputStream oos;
+        
+        public ThreadGame(ObjectInputStream is, ObjectOutputStream os){
+            oos = os; ois =is;
+        }
+        public void run() {
+            try {
+                while(true){
+                System.out.println("I am waiting for movemet");
+                ArrayList<String> al = (ArrayList<String>) ois.readObject();
+                oos.writeObject(al);
+                //oos.flush();
+                addConsole("Sending data to : "+oos);
+                }
+            } catch (Exception e) {
+                try {
+                    ois.close();
+                    oos.close();
+                    socket.close();
+                    addConsole("--CONNECTION CLOSED--");
+                    list = new ArrayList<Socket>();
+                } catch (IOException ex) {
+                    Logger.getLogger(ServerWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        public void start() {
+            if (t == null) {
+                t = new Thread(this, "");
+                t.start();
+            }
+        }
+    }
+    void addConsole(String s){
+        console.setText(s+carrige+console.getText());
+    }
 }

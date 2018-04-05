@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,61 +28,74 @@ public class BoardGame extends javax.swing.JFrame {
      */
     public ArrayList<JButton> buttons = new ArrayList<>();
     public ArrayList<Piece> allPieces = new ArrayList<>();
+
+    public ArrayList<String> moveList = new ArrayList<>();
     
     public Player player1;
     public Player player2;
     public Player Playing;
     public Player thisPlayer;
-    
+
     boolean selected = false; // HAndle multiplayer
-    
+
     Socket socket = null;
-    
+
     public static ObjectInputStream iStream;
     public static ObjectOutputStream oStream;
-    
+
+    boolean lastC = false; // Handling for rivals virtual movement
+
     public BoardGame() {
         initComponents();
         this.setResizable(false);
-        
+        startGame();
+    }
+    public void startGame(){
         this.player1 = new Player(true);
         this.player2 = new Player(false);
         player1.setRival(player2);
         player2.setRival(player1);
         this.findButtons();
         this.setButtons();
-        /*
-        Playing = player1;
-        */
     }
-    public void findButtons(){ // Only executed once at starting
+    public void findButtons() { // Only executed once at starting
         try {
             ArrayList<JButton> but = new ArrayList<>();
             Class c = Class.forName(this.getClass().getName());
             Field[] f = c.getDeclaredFields();
             for (Field f1 : f) {
-                if (!f1.getType().equals(JButton.class)) continue;
-                JButton b = (JButton)f1.get(this);
+                if (!f1.getType().equals(JButton.class)) {
+                    continue;
+                }
+                JButton b = (JButton) f1.get(this);
                 but.add(b);
             }
             buttons = but;
-        }catch(Exception e){
-            
+        } catch (Exception e) {
+
         }
     }
-    public void setButtons(){ // Executes when play area has changes
+
+    public void setButtons() { // Executes when play area has changes
         for (JButton bu : buttons) {
-            if(player1.isHere(bu.getName())){
-                if(player1.isOne){
+            if (player1.isHere(bu.getName())) {
+                if (player1.isOne) {
                     bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue.png")));
-                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
-            }else if(player2.isHere(bu.getName())){
-                if(player2.isOne){
+                } else {
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
+                }
+            } else if (player2.isHere(bu.getName())) {
+                if (player2.isOne) {
                     bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue.png")));
-                }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
-            }else bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/empty.png")));
+                } else {
+                    bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red.png")));
+                }
+            } else {
+                bu.setIcon(new ImageIcon(this.getClass().getResource("/pictures/empty.png")));
+            }
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -119,10 +133,12 @@ public class BoardGame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         console = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
+        setSize(new java.awt.Dimension(1093, 599));
         getContentPane().setLayout(null);
 
         L0_0.setBorderPainted(false);
@@ -454,23 +470,24 @@ public class BoardGame extends javax.swing.JFrame {
         getContentPane().add(L3_7);
         L3_7.setBounds(210, 160, 32, 32);
 
-        jButton1.setText("Start Game");
+        jButton1.setText("Start Game (Connect)");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(10, 10, 190, 32);
+        jButton1.setBounds(10, 10, 190, 60);
 
         console.setEditable(false);
         console.setColumns(20);
         console.setRows(5);
         jScrollPane1.setViewportView(console);
-        console.getAccessibleContext().setAccessibleParent(null);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(210, 10, 530, 70);
+        jScrollPane1.setBounds(210, 10, 570, 70);
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(10, 110, 190, 40);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pictures/background.png"))); // NOI18N
         getContentPane().add(jLabel1);
@@ -478,126 +495,131 @@ public class BoardGame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void L0_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L0_0MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L0_0MousePressed
 
     private void L1_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_0MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_0MousePressed
 
     private void L1_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_1MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_1MousePressed
 
     private void L1_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_2MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_2MousePressed
 
     private void L1_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_3MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_3MousePressed
 
     private void L1_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_4MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_4MousePressed
 
     private void L1_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_5MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_5MousePressed
 
     private void L1_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_6MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_6MousePressed
 
     private void L1_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L1_7MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L1_7MousePressed
 
     private void L2_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_0MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_0MousePressed
 
     private void L2_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_1MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_1MousePressed
 
     private void L2_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_2MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_2MousePressed
 
     private void L2_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_3MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_3MousePressed
 
     private void L2_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_4MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_4MousePressed
 
     private void L2_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_5MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_5MousePressed
 
     private void L2_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_6MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_6MousePressed
 
     private void L2_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L2_7MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L2_7MousePressed
 
     private void L3_0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_0MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_0MousePressed
 
     private void L3_1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_1MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_1MousePressed
 
     private void L3_2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_2MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_2MousePressed
 
     private void L3_3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_3MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_3MousePressed
 
     private void L3_4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_4MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_4MousePressed
 
     private void L3_5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_5MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_5MousePressed
 
     private void L3_6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_6MousePressed
-        Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_6MousePressed
 
     private void L3_7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L3_7MousePressed
-       Handler((JButton)evt.getSource());
+        Handler((JButton) evt.getSource());
     }//GEN-LAST:event_L3_7MousePressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             int i;
-            socket = new Socket("0.0.0.0",7187);
+            socket = new Socket("0.0.0.0", 7187);
             addConsole("Connecting success");
-            iStream = new ObjectInputStream(socket.getInputStream());
             oStream = new ObjectOutputStream(socket.getOutputStream());
-            i = (Integer)iStream.readObject();
-            if(i == 1){
+            oStream.flush();
+            iStream = new ObjectInputStream(socket.getInputStream());
+            i = (Integer) iStream.readObject();
+            if (i == 1) {
                 thisPlayer = player1;
                 addConsole("YOUR TURN");
-            }else if(i == 2){
+                jLabel2.setText("YOUR PIECES BLUE");
+            } else if (i == 2) {
                 thisPlayer = player2;
                 addConsole("YOUR RIVALS TURN");
+                jLabel2.setText("YOUR PIECES RED");
             }
             Playing = player1;
-            
+            ThreadClient tc = new ThreadClient(iStream);
+            tc.start();
+            System.out.println("Created thread");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            addConsole("Server must created first");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     /*
@@ -618,59 +640,137 @@ public class BoardGame extends javax.swing.JFrame {
      *and board refreshes.
      *
      */
-    void Handler(JButton b){
-        if(!selected){ // First section
-            if(thisPlayer != null && thisPlayer.equals(Playing) && Playing.playFrom(b)){
-                addConsole("Now you can select somewhere to move !");
-                selected = true;
-                if(Playing == player1)b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue_move.png")));
-                else b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red_move.png")));
-            }else{
-                addConsole("You have to select a piece that is yours !");
-            }
-        }else{ // Second section
-            if(!isSamePiece(b)){
-                if(this.isEmpty(b.getName())&&Playing.isInPossibleSet(b.getName())){ // Valid play movements
-                    if(Playing.isInScoreSet(b.getName())){
-                        Playing.scoreMoveTo(b.getName());
-                        if(!Playing.isScoreSetEmpty(b.getName())) {this.setButtons();Handler(b);addConsole("Yeni hareket geliyor");}
-                        else {
-                            Playing = Playing.getRival();
+    void Handler(JButton b) {
+        if((thisPlayer.equals(Playing) || lastC) && !Playing.equals(null)){
+            if (!selected) { // First section
+                if(lastC == true) Playing = thisPlayer.getRival();
+                if (Playing.playFrom(b)) {
+                    addConsole("Now you can select somewhere to move !");
+                    selected = true;
+                    moveList.add(b.getName()); // Adding move queue ..
+                    if (Playing == player1) {
+                        b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/blue_move.png")));
+                    } else {
+                        b.setIcon(new ImageIcon(this.getClass().getResource("/pictures/red_move.png")));
+                    }
+                } else {
+                    addConsole("You have to select a piece that is yours ! "+b.getName());
+                }
+            } else { // Second section
+                if (!isSamePiece(b)) {
+                    if (this.isEmpty(b.getName()) && Playing.isInPossibleSet(b.getName())) { // Valid play movements
+                        if (Playing.isInScoreSet(b.getName())) {
+                            Playing.scoreMoveTo(b.getName());
+                            if (!Playing.isScoreSetEmpty(b.getName())) {
+                                this.setButtons();
+                                moveList.add(b.getName()); // Adding move queue ..
+                                //Note there is no sending because turn is not over..
+                                Handler(b);
+                                addConsole("Yeni hareket geliyor");
+                            } else {
+                                moveList.add(b.getName()); // Adding move queue ..
+                                if (thisPlayer == Playing) { write(moveList); }// sending moveList to rival
+                                moveList = new ArrayList<>();
+                                if(lastC == true) Playing = Playing.getRival();
+                                this.setButtons();
+                                selected = false;
+                            }
+                        } else {
+                            Playing.defaultMoveTo(b.getName());
+                            moveList.add(b.getName()); // Adding move queue ..
+                            if (thisPlayer == Playing) { write(moveList); Playing = Playing.getRival();} // sending moveList to rival
+                            moveList = new ArrayList<>();
+                            if(lastC == true) Playing = Playing.getRival();
                             this.setButtons();
                             selected = false;
                         }
-                    }else{
-                        Playing.defaultMoveTo(b.getName());
-                        Playing = Playing.getRival();
-                        this.setButtons();
-                        selected = false;
+                    } else {
+                        addConsole("This piece is not in possible movement set");
                     }
-                }else{
-                    addConsole("This piece is not in possible movement set");
+                } else {
+                    // Selected her or his own piece :)
+                    // Redirected to handle again :))
+                    selected = false;
+                    Handler(b);
                 }
-            }else{
-                // Selected her or his own piece :)
-                // Redirected to handle again :))
-                selected = false;
-                Handler(b);
             }
+        }else addConsole("NOT YOUR TURN !!!");
+        scoreControl();
+    }
+
+    String toHandler(String s) { // This string is button name that rival play.
+        for (JButton button : buttons) {
+            if(button.getName().equals(s)){Handler(button); return "Basarili";}
+        }
+        return null;
+    }
+
+    void write(ArrayList<String> al) {
+        try {
+            oStream.writeObject(al);
+            oStream.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(BoardGame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    boolean isEmpty(String b){
-        if(Playing.isHere(b)|| Playing.rival.isHere(b))
-            return false;
+
+    String read() throws ClassNotFoundException {
         
+        try {
+            iStream = new ObjectInputStream(socket.getInputStream());
+            return (String) iStream.readObject();
+        } catch (IOException ex) {
+            Logger.getLogger(BoardGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    boolean isEmpty(String b) {
+        if (Playing.isHere(b) || Playing.rival.isHere(b)) {
+            return false;
+        }
+
         return true;
     }
-    boolean isSamePiece(JButton b){
-        if(Playing.isHere(b.getName()))
+
+    boolean isSamePiece(JButton b) {
+        if (Playing.isHere(b.getName())) {
             return true;
-        
+        }
+
         return false;
     }
-    void addConsole(String s){
+
+    void addConsole(String s) {
         char carrige = 10;
-        console.setText(console.getText() + s + carrige);
+        console.setText(console.getText()+s + carrige);
+    }
+    void scoreControl(){
+        try{
+        if(player1.pieces.size()<3){
+            if(thisPlayer.equals(player1)){
+                JOptionPane.showMessageDialog(rootPane, "Player 2 is won, YOU LOSE !");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "YOU WIN !");
+            }
+        socket.close();
+        oStream.close();
+        iStream.close();
+        startGame(); // Starting game again. This method will build board again.
+        }else if(player2.pieces.size()<3){
+            if(thisPlayer.equals(player1)){
+                JOptionPane.showMessageDialog(rootPane, "Player 1 is won, YOU LOSE !");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "YOU WIN !");
+            }
+        socket.close();
+        oStream.close();
+        iStream.close();
+        startGame();
+        }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
     /**
      * @param args the command line arguments
@@ -737,6 +837,42 @@ public class BoardGame extends javax.swing.JFrame {
     private javax.swing.JTextArea console;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+    public class ThreadClient implements Runnable { // First thread that 
+
+        private Thread t;
+        ObjectInputStream ois;
+        public ArrayList<String> moveList = new ArrayList<>();
+
+        public ThreadClient(ObjectInputStream is) {
+            ois = is;
+        }
+
+        public void run() {
+            try {
+                while(true){
+                moveList = (ArrayList<String>) ois.readObject();
+                addConsole("Move recieved from"+ moveList.get(0).toString());
+                lastC = true;
+                for (String string : moveList) {
+                    System.out.println(string);
+                    System.out.println(toHandler(string)); // Plays recieved String from rival..
+                }
+                lastC = false;
+                }
+            } catch (Exception e) {
+                //e.printStackTrace(); // Catch when connection end..
+            }
+        }
+
+        public void start() {
+            if (t == null) {
+                t = new Thread(this, "");
+                t.start();
+            }
+        }
+    }
+
 }
